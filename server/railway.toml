@@ -6,3 +6,6 @@ buildCommand = "npm install && npx prisma generate && npx prisma db push"
 startCommand = "npm start"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3
+
+[nixpacks]
+nodeVersion = "22"

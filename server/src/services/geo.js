@@ -1,5 +1,5 @@
 const geoip = require('geoip-lite')
-const UAParser = require('ua-parser-js')
+const { UAParser } = require('ua-parser-js')
 
 function getCountry(ip) {
   if (!ip || ip === '::1' || ip === '127.0.0.1') return 'Local'

@@ -1,5 +1,7 @@
 const express = require('express')
-const { nanoid } = require('nanoid')
+const { customAlphabet } = require('nanoid/non-secure')
+const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', 6)
+const bcrypt = require('bcryptjs')
 const prisma = require('../db/client')
 const { cacheSlug } = require('../services/redis')
 const { authenticate } = require('../middleware/auth')
@@ -19,7 +21,7 @@ function isValidUrl(str) {
 // POST /api/shorten
 router.post('/', shortenLimiter, authenticate, async (req, res, next) => {
   try {
-    const { url, customSlug } = req.body
+    const { url, customSlug, expiresIn, password } = req.body
 
     if (!url || !isValidUrl(url)) {
       return res.status(400).json({ error: 'A valid URL is required' })
@@ -34,19 +36,38 @@ router.post('/', shortenLimiter, authenticate, async (req, res, next) => {
       }
     }
 
+    // expiresIn is hours from now e.g. 24, 168 (7 days), 720 (30 days)
+    const expiresAt = expiresIn
+      ? new Date(Date.now() + expiresIn * 60 * 60 * 1000)
+      : null
+
+    // Hash password if provided
+    const hashedPassword = password ? await bcrypt.hash(password, 10) : null
+
     const record = await prisma.url.create({
       data: {
         slug,
         originalUrl: url,
         userId: req.user.userId,
+        expiresAt,
+        password: hashedPassword,
       },
     })
 
-    // Cache the slug immediately so the first redirect is fast
-    await cacheSlug(slug, url)
+    // Only cache if no password (password-protected links must always hit the server)
+    if (!hashedPassword) {
+      await cacheSlug(slug, url)
+    }
 
     const shortUrl = `${process.env.BASE_URL}/${slug}`
-    res.status(201).json({ shortUrl, slug, originalUrl: url, id: record.id })
+    res.status(201).json({
+      shortUrl,
+      slug,
+      originalUrl: url,
+      id: record.id,
+      expiresAt: record.expiresAt,
+      protected: !!hashedPassword,
+    })
   } catch (err) {
     next(err)
   }
@@ -69,6 +90,8 @@ router.get('/', authenticate, async (req, res, next) => {
         shortUrl: `${process.env.BASE_URL}/${u.slug}`,
         clicks: u._count.clicks,
         createdAt: u.createdAt,
+        expiresAt: u.expiresAt,
+        protected: !!u.password,
       }))
     )
   } catch (err) {
@@ -82,7 +105,6 @@ router.delete('/:id', authenticate, async (req, res, next) => {
     const url = await prisma.url.findFirst({
       where: { id: req.params.id, userId: req.user.userId },
     })
-
     if (!url) return res.status(404).json({ error: 'Link not found' })
 
     await prisma.url.delete({ where: { id: url.id } })
