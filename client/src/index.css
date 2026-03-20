@@ -234,3 +234,145 @@ body {
   .link-form-row { flex-direction: column; }
   .input-slug { max-width: 100%; }
 }
+
+/* ── Dashboard ── */
+.db-page { padding: 0; animation: fadeIn 0.2s ease; }
+
+.db-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+.db-title { font-size: 1.4rem; font-weight: 700; }
+.db-range-badge {
+  background: #f0fdf4;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+  border-radius: 20px;
+  padding: 0.25rem 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Stat cards */
+.db-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  box-shadow: var(--shadow);
+}
+.stat-card-label { font-size: 0.8rem; color: var(--muted); }
+.stat-card-value { font-size: 1.75rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+.stat-card-sub { font-size: 0.8rem; font-weight: 500; }
+
+/* Charts row */
+.db-charts-row {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.db-chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow);
+}
+.db-chart-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 1rem; color: var(--text); }
+
+/* Generic card */
+.db-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow);
+  margin-bottom: 1rem;
+}
+
+/* Referrers */
+.db-referrers { display: flex; flex-direction: column; gap: 0.65rem; }
+.db-referrer-row { display: flex; align-items: center; gap: 1rem; }
+.db-referrer-source { width: 110px; text-align: right; font-size: 0.85rem; color: var(--muted); flex-shrink: 0; }
+.db-referrer-bar-wrap { flex: 1; height: 10px; background: #f3f4f6; border-radius: 99px; overflow: hidden; }
+.db-referrer-bar { height: 100%; background: #6366f1; border-radius: 99px; transition: width 0.6s ease; }
+.db-referrer-count { width: 50px; text-align: right; font-size: 0.85rem; font-weight: 600; color: var(--text); flex-shrink: 0; }
+
+/* Table */
+.db-table { width: 100%; border-collapse: collapse; margin-top: 0.75rem; }
+.db-table th {
+  text-align: left;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+.db-table td { padding: 0.85rem 0.75rem; border-bottom: 1px solid var(--border); font-size: 0.875rem; }
+.db-table tr:last-child td { border-bottom: none; }
+.db-table-row { cursor: pointer; transition: background 0.1s; }
+.db-table-row:hover { background: #f5f6ff; }
+.db-link { color: #6366f1; text-decoration: none; font-weight: 500; }
+.db-link:hover { text-decoration: underline; }
+.db-muted-cell { color: var(--muted); }
+.db-muted { color: var(--muted); font-size: 0.875rem; }
+.db-trend-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.db-btn-ghost {
+  padding: 0.25rem 0.6rem;
+  font-size: 0.78rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--muted);
+}
+.db-btn-ghost:hover { background: var(--bg); }
+.db-btn-danger {
+  padding: 0.25rem 0.6rem;
+  font-size: 0.78rem;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #ef4444;
+}
+.db-btn-danger:hover { background: #fef2f2; }
+
+@media (max-width: 900px) {
+  .db-stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .db-charts-row { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .db-stat-grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ── Doughnut fix: force canvas to be square ── */
+.doughnut-wrap {
+  width: 220px;
+  height: 220px;
+  margin: 0 auto;
+}
+.doughnut-wrap canvas {
+  width: 220px !important;
+  height: 220px !important;
+}
