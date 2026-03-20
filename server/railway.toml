@@ -8,4 +8,4 @@ restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3
 
 [nixpacks]
-nodeVersion = "22"
+nodeVersion = "22" 
